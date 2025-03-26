@@ -4,11 +4,14 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class AlunniController
 {
-  public function index(Request $request, Response $response, $args):response{
+  public function index(Request $request, Response $response, $args){
     $mysqli_connection = new MySQLi('my_mariadb', 'root', 'ciccio', 'scuola');
-    $result = $mysqli_connection->query("SELECT * FROM alunni");
+    $queryParams = $request->getQueryParams();
+    $search = "WHERE nome regexp '$queryParams[search]' or cognome regexp '$queryParams[search]'" ?? "";
+    $sortCol =$queryParams['sortCol'] ?? "id";
+    $sort =$queryParams['sort'] ?? "ASC";
+    $result = $mysqli_connection->query("SELECT * FROM alunni $search order by $sortCol $sort");
     $results = $result->fetch_all(MYSQLI_ASSOC);
-
     $response->getBody()->write(json_encode($results));
     return $response->withHeader("Content-type", "application/json")->withStatus(200);
   }
@@ -64,4 +67,5 @@ class AlunniController
     $response->getBody()->write(json_encode($results));
     return $response->withHeader("Content-type", "application/json")->withStatus(200);
   }
+
 }

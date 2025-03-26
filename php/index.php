@@ -16,15 +16,13 @@ $app = AppFactory::create();
 
 //$app->get('/json/{name}', "HelloController:json_name");
 
+$app->addErrorMiddleware(true, true, true);
+
 $app->get('/alunni', "AlunniController:index");
-
-$app->get('/alunni/{id}', "AlunniController:getAlunni");
-
-$app->post('/alunno', "AlunniController:createAlunno");
-
-$app->put('/alunno/{id}', "AlunniController:updateAlunno");
-
-$app->delete('/alunno/{id}', "AlunniController:deleteAlunno");
-
+$app->get('/alunni/{id}', "AlunniController:view");
+$app->post('/alunni', "AlunniController:create");
+$app->put('/alunni/{id}', "AlunniController:update");
+$app->delete('/alunni/{id}', "AlunniController:destroy");
+$app->delete('/alunni/{id}', "AlunniController:destroy");
 
 $app->run();
