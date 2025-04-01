@@ -16,10 +16,15 @@ class AlunniController
     return $response->withHeader("Content-type", "application/json")->withStatus(200);
   }
 
-  public function getAlunni(Request $request, Response $response, $args):response{
-    $id = $args["id"];
+  public function view(Request $request, Response $response, $args){
+    $id = $args['id'];
     $mysqli_connection = new MySQLi('my_mariadb', 'root', 'ciccio', 'scuola');
-    $result = $mysqli_connection->query("SELECT * FROM alunni a WHERE $id = a.id");
+    //$result = $mysqli_connection->query("SELECT * FROM alunni WHERE id=$id");
+    $sql = "SELECT * FROM alunni WHERE id=?";
+    $stmt = $mysqli_connection->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
     $results = $result->fetch_all(MYSQLI_ASSOC);
     $response->getBody()->write(json_encode($results));
     return $response->withHeader("Content-type", "application/json")->withStatus(200);
